@@ -1,0 +1,68 @@
+#!/bin/bash
+#SBATCH -A fnrpredator
+#SBATCH -N 1
+#SBATCH -n 1
+#SBATCH -t 1-00:00:00
+#SBATCH -e %x_%j.err
+#SBATCH -o %x-%j.out
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mail-user=allen715@purdue.edu
+
+### change cd and check all necessary modules are loaded
+cd $SLURM_SUBMIT_DIR
+module purge
+module load bioinfo
+module load bwa
+module load picard-tools
+module load bedops
+module load GATK/3.6.0
+module load samtools
+
+#Make sample list
+
+cd /scratch/bell/allen715/Gray_whales/Reads/
+### correct this line and check that samples match
+ls -1 *.fq.gz | sed "s/_R[1-2]_001_val_[1-2].fastq.gz//g" | uniq > sample.list
+#Make directory to hold all SLURMM jobs
+mkdir jobs
+
+#Define variables to shorten commands
+### change paths
+REF=/scratch/bell/blackan/PUPFISH/C.tularosa/assembly/ncbi/Danio_rerio/GCF_000002035.6_ref/ref.fa
+DICT=/scratch/bell/blackan/PUPFISH/C.tularosa/assembly/ncbi/Danio_rerio/GCF_000002035.6_ref/ref.dict
+
+### check if these are needed
+#bwa index $REF
+#samtools faidx $REF
+#PicardCommandLine CreateSequenceDictionary reference=$REF output=$DICT
+
+
+while read -a line
+do 
+	echo "#!/bin/sh -l
+#SBATCH -A fnrpredator
+#SBATCH -N 1
+#SBATCH -n 10
+#SBATCH -t 10-00:00:00
+#SBATCH --job-name=${line[0]}_align_stats
+#SBATCH --error=${line[0]}_align_stats.e
+#SBATCH --output=${line[0]}_align_stats.o
+#SBATCH --mem=10G
+
+### change cd and check all necessary modules are loaded                                                                          
+module --force purge
+module load bioinfo
+module load bwa
+module load picard-tools
+module load bedops
+module load GATK/3.6.0
+module load samtools
+
+
+#Move to the paired-end fastq containing folder
+cd /scratch/bell/allen715/Gray_whales/Reads/
+
+samtools sort -n -T tmp -O BAM out.sam | samtools fixmate -m -r -O BAM | samtools sort -T tmp -O BAM | samtools calmd -Q - $REF | samtools markdup -r -T tmp | samtools view -F 3852 -hbq 30 -o qc.bam -
+
+### check this
+#for i in `ls -1 *sh`; do  echo "sbatch $i" ; done > slurmm_jobs ; source ./slurmm_jobs
