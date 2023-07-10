@@ -1,0 +1,3 @@
+#run the following line while in the "jobs" directory to submit all slurm jobs 
+
+for i in `ls -1 *sh`; do  echo "sbatch $i" ; done > slurmm_jobs ; source ./slurmm_jobs
