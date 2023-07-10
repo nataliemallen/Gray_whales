@@ -8,8 +8,6 @@
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=allen715@purdue.edu
 
-###parse reference genome file to check headers###
-
 file="GCA_028021215.1_mEscRob2.pri_genomic.fa"
 
 if [ ! -f "$file" ]; then
