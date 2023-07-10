@@ -9,8 +9,6 @@
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=allen715@purdue.edu
 
-###format reference genome to prep for mapping###
-
 module load bioinfo
 module load bioawk
 module load seqtk
