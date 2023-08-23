@@ -18,7 +18,7 @@ module load BBMap
 module load r
 module load bedops
 
-###prep reference genome for mapping (original.fa is autosomes only)####
+###prep reference genome for mapping####
 ###Reduce fasta header length###
 reformat.sh in=original.fa out=new.fa trd=t -Xmx20g overwrite=T
 #sort by length
