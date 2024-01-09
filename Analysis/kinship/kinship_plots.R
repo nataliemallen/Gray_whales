@@ -57,45 +57,50 @@ transparent_pur <- rgb(1, 0, 1, alpha=0.5)
 transparent_gre <- rgb(0, 1, 1, alpha=0.5)
 
 #KING vs R1 for all pop 
-plot(east$R1, east$KING, pch=20,cex=1, col="red", xlim = c(0.1,1),ylim=c(-0.2,0.5),
-     xlab="R1", ylab="KING")+points(west$R1, west$KING, pch=20,cex=1, col="blue")+points(unknown$R1, unknown$KING, pch=20,cex=1, col="forestgreen")
 
-polygon(c(0.423128,1,1,0.423128),c(0.1767767,0.1767767,0.3535534,0.3535534),col=transparent_color,
-        border = NA) # Parent Offspring
-#polygon(c(0.330533,0.427657,0.427657,0.330533),c(0.1767767,0.1767767,0.3535534,0.3535534),col=light_pal[4],
-#border = NA) # Full Sib
-
-polygon(c(0.2,0.5,0.5,0.2),c(0.08838835,0.08838835,0.1767767,0.1767767),col=transparent_red,
-        border = NA) # Half Sib
-polygon(c( 0.07142857,0.4210526,0.4210526,0.07142857),c(0.04419417,0.04419417,0.08838835,0.08838835),col=transparent_yel,
-        border = NA) # First cousins
-polygon(c(0,0.4,0.4,0),c(0.04419417,0.04419417,-0.04949,-0.04949),col=transparent_pur,
-        border = NA) # Unrelated
-
-legend(c(0.7,0.7),c(0.1,0), text.font = 1,
-       legend=c("1st degree","2nd degree","3rd degree", "Unrelated"),
-       fill = c(transparent_blue, transparent_red, transparent_yel, transparent_pur), bty='n', border = NA,
-       pt.cex=2, x.intersp=1, text.width=2, xpd=T,y.intersp=1.5)
-
-#KING vs R1 for pop east
-plot(east$R1, east$KING, pch=20,cex=1, col="red", xlim = c(0.1,1),ylim=c(-0.2,0.5),
+# Set up the plot
+plot(east$R1, east$KING, pch=20, cex=1, col="red", xlim=c(0.1,1), ylim=c(-0.2,0.5),
      xlab="R1", ylab="KING")
 
-polygon(c(0.423128,1,1,0.423128),c(0.1767767,0.1767767,0.3535534,0.3535534),col=transparent_blue,
-        border = NA) # Parent Offspring
-polygon(c(0.330533,0.427657,0.427657,0.330533),c(0.1767767,0.1767767,0.3535534,0.3535534),col=transparent_gre,
-border = NA) # Full Sib
-polygon(c(0.2,0.5,0.5,0.2),c(0.08838835,0.08838835,0.1767767,0.1767767),col=transparent_red,
-        border = NA) # Half Sib
-polygon(c( 0.07142857,0.4210526,0.4210526,0.07142857),c(0.04419417,0.04419417,0.08838835,0.08838835),col=transparent_yel,
-        border = NA) # First cousins
-polygon(c(0,0.4,0.4,0),c(0.04419417,0.04419417,-0.04949,-0.04949),col=transparent_pur,
-        border = NA) # Unrelated
+# Draw polygons first
+polygon(c(0.423128, 1, 1, 0.423128), c(0.1767767, 0.1767767, 0.3535534, 0.3535534), col=transparent_color, border=NA) # Parent Offspring
+polygon(c(0.2, 0.5, 0.5, 0.2), c(0.08838835, 0.08838835, 0.1767767, 0.1767767), col=transparent_red, border=NA) # Half Sib
+polygon(c(0.07142857, 0.4210526, 0.4210526, 0.07142857), c(0.04419417, 0.04419417, 0.08838835, 0.08838835), col=transparent_yel, border=NA) # First cousins
+polygon(c(0, 0.4, 0.4, 0), c(0.04419417, 0.04419417, -0.04949, -0.04949), col=transparent_pur, border=NA) # Unrelated
 
-legend(c(0.7,0.7),c(0.1,0), text.font = 1,
-       legend=c("1st degree","2nd degree","3rd degree", "Unrelated"),
-       fill = c(transparent_blue, transparent_red, transparent_yel, transparent_pur), bty='n', border = NA,
-       pt.cex=2, x.intersp=1, text.width=2, xpd=T,y.intersp=1.5)
+# Add points on top of polygons
+points(west$R1, west$KING, pch=20, cex=1, col="blue")
+points(unknown$R1, unknown$KING, pch=20, cex=1, col="forestgreen")
+
+# Add legend
+legend(c(0.7, 0.7), c(0.1, 0), text.font=1,
+       legend=c("1st degree", "2nd degree", "3rd degree", "Unrelated"),
+       fill=c(transparent_blue, transparent_red, transparent_yel, transparent_pur), bty='n', border=NA,
+       pt.cex=2, x.intersp=1, text.width=2, xpd=TRUE, y.intersp=1.5)
+
+
+#KING vs R1 for pop east
+
+# Set up the plot
+plot(east$R1, east$KING, pch=20, cex=1, col="red", xlim=c(0.1,1), ylim=c(-0.2,0.5),
+     xlab="R1", ylab="KING")
+
+# Draw polygons first
+polygon(c(0.423128, 1, 1, 0.423128), c(0.1767767, 0.1767767, 0.3535534, 0.3535534), col=transparent_blue, border=NA) # Parent Offspring
+#polygon(c(0.330533, 0.427657, 0.427657, 0.330533), c(0.1767767, 0.1767767, 0.3535534, 0.3535534), col=transparent_gre, border=NA) # Full Sib
+polygon(c(0.2, 0.5, 0.5, 0.2), c(0.08838835, 0.08838835, 0.1767767, 0.1767767), col=transparent_red, border=NA) # Half Sib
+polygon(c(0.07142857, 0.4210526, 0.4210526, 0.07142857), c(0.04419417, 0.04419417, 0.08838835, 0.08838835), col=transparent_yel, border=NA) # First cousins
+polygon(c(0, 0.4, 0.4, 0), c(0.04419417, 0.04419417, -0.04949, -0.04949), col=transparent_pur, border=NA) # Unrelated
+
+# Add points on top of polygons
+points(east$R1, east$KING, pch=20, cex=1, col="red")
+
+# Add legend
+legend(c(0.7, 0.7), c(0.1, 0), text.font=1,
+       legend=c("1st degree", "2nd degree", "3rd degree", "Unrelated"),
+       fill=c(transparent_blue, transparent_red, transparent_yel, transparent_pur), bty='n', border=NA,
+       pt.cex=2, x.intersp=1, text.width=2, xpd=TRUE, y.intersp=1.5)
+
 
 #KING vs R1 for pop west
 plot(west$R1, west$KING, pch=20,cex=1, col="blue", xlim = c(0.1,1),ylim=c(-0.2,0.5),
@@ -112,11 +117,15 @@ polygon(c( 0.07142857,0.4210526,0.4210526,0.07142857),c(0.04419417,0.04419417,0.
 polygon(c(0,0.4,0.4,0),c(0.04419417,0.04419417,-0.04949,-0.04949),col=transparent_pur,
         border = NA) # Unrelated
 
+# Add points on top of polygons
+points(west$R1, west$KING, pch=20, cex=1, col="blue")
+
 legend(c(0.7,0.7),c(0.1,0), text.font = 1,
        legend=c("1st degree","2nd degree","3rd degree", "Unrelated"),
        fill = c(transparent_blue, transparent_red, transparent_yel, transparent_pur), bty='n', border = NA,
        pt.cex=2, x.intersp=1, text.width=2, xpd=T,y.intersp=1.5)
 
+### R0 vs R1 
 #R0 vs R1 for all pop 
 plot(east$R1, east$R0, pch=20,cex=1, col="red", xlim = c(0.1,1),ylim=c(-0.2,1.0),
      xlab="R1", ylab="KING")+points(west$R1, west$R0, pch=20,cex=1, col="blue")+points(unknown$R1, unknown$R0, pch=20,cex=1, col="forestgreen")
