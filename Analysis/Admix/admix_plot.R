@@ -76,7 +76,6 @@ ggplot(plot_data, aes(x = SampleID, y = Proportion, fill = Cluster)) +
 
 
 ### k = 4
-### R code for pca 
 setwd("/Users/natal/R")
 
 # Load necessary libraries
