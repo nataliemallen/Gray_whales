@@ -1,6 +1,6 @@
 ### R code for k = 2 admixture plot
-#.csv file columns: Sample_ID	Cluster1	Cluster2	Order	POP, Order can be used to set order of bars 
-#Clusters from .qopt
+#.csv file columns: Sample_ID	Cluster1	Cluster2	Order	POP
+#Clusters from .qopt; Order can be used to set order of bars 
 setwd("/Users/natal/R")
 
 # Load necessary libraries
