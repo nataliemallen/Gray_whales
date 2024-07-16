@@ -1,34 +1,31 @@
 #!/bin/bash
 #SBATCH --job-name=align_whales
-#SBATCH -A fnrpredator
+#SBATCH -A fnrdewoody
 #SBATCH -N 1
 #SBATCH -n 64
 #SBATCH -t 12-00:00:00
 #SBATCH --error=align.err
 #SBATCH --output=align.out
-#SBATCH --job-name=produce_align_SLURMM_jobs
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=allen715@purdue.edu
 
-
-cd $SLURM_SUBMIT_DIR
 module purge
-module load bioinfo
+module load biocontainers
 module load bwa
-module load picard-tools/2.18.2
+module load picard
 module load bedops
-module load GATK/3.6.0
-module load samtools/1.5
+module load gatk/3.8
+module load samtools
 
 #Make sample list
 
-cd /scratch/bell/allen715/Gray_whales/Reads/
+cd /scratch/negishi/allen715/Gray_whales/
 #Make directory to hold all SLURMM jobs
 mkdir jobs
 
 #Define variables to shorten commands
-REF=/scratch/bell/allen715/Gray_whales/Reference/original.fa
-DICT=/scratch/bell/allen715/Gray_whales/Reference/original.fa.dict
+REF=/scratch/negishi/allen715/Gray_whales/reference/ref.fa
+DICT=/scratch/negishi/allen715/Gray_whales/reference/dictionary/ref.fa.dict
 
 #bwa index $REF
 #samtools faidx $REF
@@ -37,8 +34,8 @@ DICT=/scratch/bell/allen715/Gray_whales/Reference/original.fa.dict
 
 while read -a line
 do 
-	echo "#!/bin/sh -l
-#SBATCH -A fnrpredator
+	echo "#!/bin/bash
+#SBATCH -A fnrdewoody
 #SBATCH -N 1
 #SBATCH -n 10
 #SBATCH -t 05-00:00:00
@@ -48,27 +45,29 @@ do
 #SBATCH --mem=20G
 
 module --force purge
-module load bioinfo
+module load biocontainers
 module load bwa
-module load picard-tools/2.18.2
-module load bedops
-module load GATK/3.6.0
-module load samtools/1.5
-
 
 #Move to the paired-end fastq containing folder
-cd  /scratch/bell/allen715/Gray_whales/Reads/
+cd  /scratch/negishi/allen715/Gray_whales/
 
 # Align sample to indexed reference genome
 bwa mem -t 10 -M -R \"@RG\tID:group1\tSM:${line[0]}\tPL:illumina\tLB:lib1\tPU:unit1\" \
-/scratch/bell/allen715/Gray_whales/Reference/original.fa \
-${line[0]}_R1_001.fastq.gz ${line[0]}_R2_001.fastq.gz > ../aligned/${line[0]}.sam
+/scratch/negishi/allen715/Gray_whales/reference/ref.fa \
+${line[0]}_R1.fq.gz ${line[0]}_R2.fq.gz > /scratch/negishi/allen715/Gray_whales/aligned/${line[0]}.sam
+
+module --force purge
+module load biocontainers
+module load picard
+module load bedops
+module load gatk/3.8
+module load samtools
 
 #Move to aligned directory
-cd ../aligned
+cd /scratch/negishi/allen715/Gray_whales/aligned/
 
 #Validate sam file
-PicardCommandLine ValidateSamFile I=${line[0]}.sam MODE=SUMMARY O=${line[0]}.sam.txt
+PicardCommandLine ValidateSamFile R=/scratch/negishi/allen715/Gray_whales/reference/ref.fa I=${line[0]}.sam MODE=SUMMARY O=${line[0]}.sam.txt
 
 #Sort validated sam file by read coordinate
 PicardCommandLine SortSam INPUT=${line[0]}.sam OUTPUT=sorted_${line[0]}.bam SORT_ORDER=coordinate
@@ -83,13 +82,13 @@ PicardCommandLine MarkDuplicates INPUT=sorted_${line[0]}.bam OUTPUT=dedup_${line
 PicardCommandLine BuildBamIndex INPUT=dedup_${line[0]}.bam
 
 # local realignment of reads
-GenomeAnalysisTK -T RealignerTargetCreator -nt 10 -R /scratch/bell/allen715/Gray_whales/Reference/original.fa -I dedup_${line[0]}.bam -o ${line[0]}_forIndelRealigner.intervals
+gatk3 -T RealignerTargetCreator -nt 10 -R /scratch/negishi/allen715/Gray_whales/reference/ref.fa -I dedup_${line[0]}.bam -o ${line[0]}_forIndelRealigner.intervals
 
 #Realign with established intervals
-GenomeAnalysisTK -T IndelRealigner -R /scratch/bell/allen715/Gray_whales/Reference/original.fa -I dedup_${line[0]}.bam -targetIntervals ${line[0]}_forIndelRealigner.intervals -o ${line[0]}_indel.bam
+gatk3 -T IndelRealigner -R /scratch/negishi/allen715/Gray_whales/reference/ref.fa -I dedup_${line[0]}.bam -targetIntervals ${line[0]}_forIndelRealigner.intervals -o ${line[0]}_indel.bam
 
 #Make new directory
-mkdir ../final_bams
+#mkdir ../final_bams
 
 #Fix mate info
 PicardCommandLine FixMateInformation INPUT=dedup_${line[0]}.bam OUTPUT=${line[0]}.fixmate.bam SO=coordinate CREATE_INDEX=true
@@ -98,10 +97,10 @@ PicardCommandLine FixMateInformation INPUT=dedup_${line[0]}.bam OUTPUT=${line[0]
 #   supplementary (2048) reads from indel-realigned BAMs, and keep only reads
 #   mapped in a proper pair (2) to regions in a BED file (produced from QC_reference.sh)
 
-samtools view -@ 10 -q 30 -b -F 3844 -f 2 -L /scratch/bell/allen715/Gray_whales/Reference/ok.bed ${line[0]}.fixmate.bam > ../final_bams/${line[0]}_filt.bam 
+samtools view -@ 10 -q 30 -b -F 3844 -f 2 -L /scratch/negishi/allen715/Gray_whales/reference/ok.bed ${line[0]}.fixmate.bam > ../final_bams/${line[0]}_filt.bam 
 
 #Move into the final directory
-cd ../final_bams/
+cd /scratch/negishi/allen715/Gray_whales/final_bams/
 #Index bam file
 PicardCommandLine BuildBamIndex INPUT=${line[0]}_filt.bam
 
