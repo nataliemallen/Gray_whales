@@ -32,7 +32,7 @@ REF="/scratch/negishi/allen715/Gray_whales/reference/ref.fa"
 OUT="/scratch/negishi/allen715/Gray_whales/parentage/for_plink"
 ANGSDFILE="/scratch/negishi/allen715/Gray_whales/parentage/angsd.file"
  
-# plink file for GONE
+# plink file 
 angsd -bam "$BAM_LIST" -ref "$REF" -rf chrs-plink.txt -sites "$ANGSDFILE" -out "$OUT" \
 -doPlink 2 -doGeno -4 -doPost 1 -doMajorMinor 1 -GL 2 -doCounts 1 -doMaf 1 -postCutoff 0.99 -SNP_pval 1e-6 -geno_minDepth 5 \
 -minMapQ 30 -minQ 30 -minInd 46 -only_proper_pairs 1 -remove_bads 1 -uniqueOnly 1 -baq 2 -P 64
