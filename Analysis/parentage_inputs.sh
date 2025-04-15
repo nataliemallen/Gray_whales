@@ -9,8 +9,6 @@
 #SBATCH --mail-user=allen715@purdue.edu
 #SBATCH --mail-type=END,FAIL
 
-# *incomplete* GONE script
-
 module load biocontainers
 module load angsd
 module load bcftools
