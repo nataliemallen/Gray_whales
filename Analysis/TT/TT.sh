@@ -19,8 +19,8 @@ VCF="$WORKDIR/TTo.vcf"
 OUTMAIN="$WORKDIR"
 SITES="$OUTMAIN/sites/ancestral_supported_sites.txt.bgz"
 RSCRIPT_PATH="$WORKDIR/tt_calc.R"
-PAIR_FILE="$WORKDIR/blue_west_vs_pink_west.csv"  
-RESULTS="$WORKDIR/results_blue_west_vs_pink_west.csv"
+PAIR_FILE="$WORKDIR/TT_pairs.csv"  
+RESULTS="$WORKDIR/TT_reslts.csv"
 
 MU=1.11e-8
 G=18
