@@ -9,7 +9,7 @@ REFERENCE_GENOME="/scratch/negishi/allen715/Gray_whales/new_ref/ref.fa"
 BAM_DIR="/scratch/negishi/allen715/Gray_whales/final_bams/merged/final_merged_use/"
 OUTPUT_DIR="/scratch/negishi/allen715/Gray_whales/CNVs/"
 POPULATION1_LIST="east_bams.txt"
-POPULATION2_LIST="west_bams.txt"
+POPULATION2_LIST="west_bams_33.txt"
 
 module load biocontainers
 module load samtools
