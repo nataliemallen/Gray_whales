@@ -4,7 +4,13 @@ import pandas as pd
 
 # %%
 # Load the log likelihood values
-data = pd.read_csv('log_likelihoods.txt', sep=' ', header=None, names=['Run', 'LogLikelihood'])
+data = pd.read_csv(
+    "log_likelihoods.txt",
+    sep=r"\s+",
+    engine="python",
+    header=None,
+    names=["Run", "LogLikelihood"]
+)
 
 # %%
 # Function to extract K value and run number

@@ -1,10 +1,10 @@
-### plot eval admix
-### K = 2
-# Set working directory
-setwd("/Users/natal/R/whales")
+# evaladmix residual-correlation plots for k=1-5
+setwd("/Users/natal/Documents/Purdue/Whale Project/2026_analysis")
 
 # Load necessary functions
 source("visFuns.R")
+
+writeLines(read.csv("whale_metadata_2026.csv")$POP, "eval_admix.info")
 
 # Read population labels (same for all K)
 pop <- read.table("eval_admix.info", as.is = TRUE)
@@ -16,7 +16,7 @@ K_values <- c(1, 2, 3, 4, 5)
 for (K in K_values) {
   
   # Construct file names
-  q_file <- paste0("admix_K", K, "_run16.qopt")
+  q_file <- paste0("admix_K", K, "_best.qopt")
   r_file <- paste0("K", K, "_output.corres.txt")
   
   # Read Q matrix

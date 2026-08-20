@@ -1,43 +1,35 @@
 #!/bin/bash
-#SBATCH --job-name=heterozygosity
-#SBATCH -A highmem
+#SBATCH -A dewoody
+#SBATCH --job-name=realSFS_het
+#SBATCH -p highmem
 #SBATCH -N 1
-#SBATCH -n 32
-#SBATCH -t 1-00:00:00
+#SBATCH -n 96
+#SBATCH -t 24:00:00
 #SBATCH -e %x_%j.err
 #SBATCH -o %x_%j.out
 #SBATCH --mail-user=allen715@purdue.edu
 #SBATCH --mail-type=END,FAIL
 
-mkdir jobs_het
-mkdir HET
+# per-sample heterozygosity from folded per-sample sfs
 
-while read -a line
-do 
-	echo "#!/bin/bash
-#SBATCH -A highmem
-#SBATCH -n 10
-#SBATCH -t 1-00:00:00
-#SBATCH --job-name=${line[0]}_het_stats
-#SBATCH --error=${line[0]}_het_stats.e
-#SBATCH --output=${line[0]}_het_stats.o
-
+module --force purge
 module load biocontainers
 module load angsd
 
-#Move to the bams folder
-cd /scratch/negishi/allen715/Gray_whales/final_bams/merged/
+PROJ="/scratch/gautschi/allen715/2026_whales"
+OUT="$PROJ/het"
 
-angsd -i ${line[0]}.bam -ref /scratch/negishi/allen715/Gray_whales/reference/ref.fa  -anc /scratch/negishi/allen715/Gray_whales/reference/ref.fa  -dosaf 1 -minMapQ 30 -GL 1 -P 26 -out /scratch/negishi/allen715/Gray_whales/heterozygosity/HET/${line[0]} -doCounts 1 -setMinDepth 3
+cd "$OUT"
 
-realSFS -P 10 -fold 1 /scratch/negishi/allen715/Gray_whales/heterozygosity/HET/${line[0]}.saf.idx > /scratch/negishi/allen715/Gray_whales/heterozygosity/HET/${line[0]}_est.ml" > ./jobs_het/${line[0]}_alignment.sh
+while read -r BAM; do
+    SAMPLE=$(basename "$BAM" .bam)
 
-done < ./sample.list
+    echo "[$(date)] Processing $SAMPLE"
+    
+    # angsd -i "$BAM" -ref "$REF" -anc "$REF" -P 16 \
+    #   -GL 1 -doSaf 1 -doCounts 1 -minMapQ 20 -minQ 20 -setMinDepth 3 \
+    #   -out "$OUT/$SAMPLE"
 
-#for i in `ls -1 *sh`; do  echo "sbatch $i" ; done > jobs ; source ./jobs
+    realSFS -fold 1 "${SAMPLE}.saf.idx" > "${SAMPLE}_est.ml"
 
-#Get individual heterozygosity, proportion of heterozygotes:
-#cat ./*ml
-
-#Use output from cat command for calculate prop heterozygote
-#DONE
+done < "$PROJ/bams_list.txt"
